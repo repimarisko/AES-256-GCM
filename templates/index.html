@@ -17,6 +17,70 @@
     <div class="container">
       <h1><i class="fas fa-lock"></i> Image Encryption Tool</h1>
 
+      <div class="info-section">
+        <div class="info-card">
+          <h3><i class="fas fa-shield-alt"></i> Keamanan Tingkat Tinggi</h3>
+          <p>
+            Aplikasi ini menggunakan enkripsi AES-256-GCM yang merupakan standar
+            keamanan tingkat tinggi untuk melindungi gambar Anda.
+          </p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-key"></i> Proteksi Berbasis Password</h3>
+          <p>
+            Gambar Anda dilindungi dengan password yang Anda tentukan sendiri.
+            Tanpa password yang benar, gambar tidak dapat diakses.
+          </p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-images"></i> Format yang Didukung</h3>
+          <p>
+            Mendukung berbagai format gambar populer seperti JPG, PNG, dan GIF.
+          </p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-mobile-alt"></i> Mudah Digunakan</h3>
+          <p>
+            Antarmuka yang intuitif dan responsif, dapat digunakan di desktop
+            maupun perangkat mobile.
+          </p>
+        </div>
+      </div>
+
+      <div class="how-to-use">
+        <h2><i class="fas fa-book"></i> Cara Penggunaan</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <p>
+              Pilih tab "Encrypt" untuk mengenkripsi gambar atau "Decrypt" untuk
+              mendekripsi gambar yang sudah terenkripsi.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <p>
+              Upload gambar yang ingin dienkripsi atau file yang sudah
+              terenkripsi.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <p>
+              Masukkan password yang kuat. Gunakan kombinasi huruf besar, huruf
+              kecil, angka, dan karakter khusus.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <p>
+              Klik tombol "Encrypt Image" atau "Decrypt Image" dan tunggu proses
+              selesai.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {% with messages = get_flashed_messages() %} {% if messages %} {% for
       message in messages %}
       <div class="alert">
