@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
 # Configuration
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = '/tmp/uploads' if os.environ.get('VERCEL') else 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -165,5 +165,6 @@ def decrypt():
     flash('Invalid file')
     return redirect(url_for('index'))
 
+# For local development
 if __name__ == '__main__':
     app.run(debug=True) 

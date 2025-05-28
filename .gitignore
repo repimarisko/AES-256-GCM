@@ -1,5 +1,3 @@
-.vercel
-
 # Python
 __pycache__/
 *.py[cod]
@@ -36,3 +34,7 @@ ENV/
 # Project specific
 uploads/
 .env
+
+# Vercel
+.vercel
+.now
