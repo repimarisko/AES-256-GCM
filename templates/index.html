@@ -3,85 +3,122 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image Encryption</title>
+    <title>Image Encryption Tool</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
     <div class="container">
-      <h1>Image Encryption Tool</h1>
+      <h1><i class="fas fa-lock"></i> Image Encryption Tool</h1>
 
       {% with messages = get_flashed_messages() %} {% if messages %} {% for
       message in messages %}
-      <div class="alert">{{ message }}</div>
+      <div class="alert">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ message }}
+      </div>
       {% endfor %} {% endif %} {% endwith %}
 
       <div class="tabs">
         <button class="tab-btn active" onclick="showTab('encrypt')">
-          Encrypt
+          <i class="fas fa-lock"></i> Encrypt
         </button>
-        <button class="tab-btn" onclick="showTab('decrypt')">Decrypt</button>
+        <button class="tab-btn" onclick="showTab('decrypt')">
+          <i class="fas fa-unlock"></i> Decrypt
+        </button>
       </div>
 
       <div id="encrypt" class="tab-content active">
-        <h2>Encrypt Image</h2>
+        <h2><i class="fas fa-lock"></i> Encrypt Image</h2>
         <form
           action="{{ url_for('encrypt') }}"
           method="post"
           enctype="multipart/form-data"
+          onsubmit="showLoading('encrypt')"
         >
           <div class="form-group">
-            <label for="encrypt-file">Select Image:</label>
+            <label for="encrypt-file">
+              <i class="fas fa-image"></i> Select Image:
+            </label>
             <input
               type="file"
               id="encrypt-file"
               name="file"
               accept=".jpg,.jpeg,.png,.gif"
               required
+              onchange="updateFileName(this, 'encrypt-file-name')"
             />
+            <div id="encrypt-file-name" class="file-name"></div>
           </div>
           <div class="form-group">
-            <label for="encrypt-password">Password:</label>
+            <label for="encrypt-password">
+              <i class="fas fa-key"></i> Password:
+            </label>
             <input
               type="password"
               id="encrypt-password"
               name="password"
               required
+              placeholder="Enter a strong password"
             />
           </div>
-          <button type="submit" class="btn">Encrypt Image</button>
+          <button type="submit" class="btn">
+            <i class="fas fa-lock"></i> Encrypt Image
+          </button>
+          <div id="encrypt-loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Encrypting your image...</p>
+          </div>
         </form>
       </div>
 
       <div id="decrypt" class="tab-content">
-        <h2>Decrypt Image</h2>
+        <h2><i class="fas fa-unlock"></i> Decrypt Image</h2>
         <form
           action="{{ url_for('decrypt') }}"
           method="post"
           enctype="multipart/form-data"
+          onsubmit="showLoading('decrypt')"
         >
           <div class="form-group">
-            <label for="decrypt-file">Select Encrypted File:</label>
+            <label for="decrypt-file">
+              <i class="fas fa-file"></i> Select Encrypted File:
+            </label>
             <input
               type="file"
               id="decrypt-file"
               name="file"
               accept=".encrypted"
               required
+              onchange="updateFileName(this, 'decrypt-file-name')"
             />
+            <div id="decrypt-file-name" class="file-name"></div>
           </div>
           <div class="form-group">
-            <label for="decrypt-password">Password:</label>
+            <label for="decrypt-password">
+              <i class="fas fa-key"></i> Password:
+            </label>
             <input
               type="password"
               id="decrypt-password"
               name="password"
               required
+              placeholder="Enter the encryption password"
             />
           </div>
-          <button type="submit" class="btn">Decrypt Image</button>
+          <button type="submit" class="btn">
+            <i class="fas fa-unlock"></i> Decrypt Image
+          </button>
+          <div id="decrypt-loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Decrypting your image...</p>
+          </div>
         </form>
       </div>
     </div>
@@ -103,6 +140,72 @@
 
         // Add active class to clicked button
         event.target.classList.add("active");
+      }
+
+      function updateFileName(input, elementId) {
+        const fileName = input.files[0]?.name;
+        const fileNameElement = document.getElementById(elementId);
+        if (fileName) {
+          fileNameElement.textContent = `Selected file: ${fileName}`;
+        } else {
+          fileNameElement.textContent = "";
+        }
+      }
+
+      function showLoading(formType) {
+        const loadingElement = document.getElementById(`${formType}-loading`);
+        loadingElement.classList.add("active");
+      }
+
+      // Add password strength indicator
+      document.querySelectorAll("input[type='password']").forEach((input) => {
+        input.addEventListener("input", function () {
+          const password = this.value;
+          const strength = calculatePasswordStrength(password);
+          updatePasswordStrength(this, strength);
+        });
+      });
+
+      function calculatePasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (password.match(/[a-z]/)) strength++;
+        if (password.match(/[A-Z]/)) strength++;
+        if (password.match(/[0-9]/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]/)) strength++;
+        return strength;
+      }
+
+      function updatePasswordStrength(input, strength) {
+        const colors = ["#ff4444", "#ffbb33", "#ffeb3b", "#00C851", "#007E33"];
+        const messages = [
+          "Very Weak",
+          "Weak",
+          "Medium",
+          "Strong",
+          "Very Strong",
+        ];
+
+        // Remove existing strength indicator
+        const existingIndicator =
+          input.parentElement.querySelector(".password-strength");
+        if (existingIndicator) {
+          existingIndicator.remove();
+        }
+
+        // Create new strength indicator
+        const indicator = document.createElement("div");
+        indicator.className = "password-strength";
+        indicator.style.color = colors[strength - 1];
+        indicator.innerHTML = `
+          <div class="strength-bar">
+            <div class="strength-level" style="width: ${
+              (strength / 5) * 100
+            }%; background-color: ${colors[strength - 1]}"></div>
+          </div>
+          <span>${messages[strength - 1]}</span>
+        `;
+        input.parentElement.appendChild(indicator);
       }
     </script>
   </body>
